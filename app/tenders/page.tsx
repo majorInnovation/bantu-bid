@@ -48,61 +48,113 @@ export default function TendersPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <PageHeader eyebrow="Procurement workspace" title="Tender pipeline" description="Search, assess, and prioritise procurement opportunities with a structured enterprise view." actions={<Button>Export list</Button>} />
+      <main className="mx-auto max-w-7xl px-4 py-4 md:px-6 md:py-8">
+        <PageHeader eyebrow="Procurement workspace" title="Tender pipeline" description="Search and assess procurement opportunities." />
 
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <SectionHeader title="Filters" description="Refine by sector, status and budget" action={<div className="flex items-center gap-2 text-sm text-slate-500"><Filter className="h-4 w-4" /> Live results</div>} />
-          <div className="mt-5 grid gap-4 lg:grid-cols-5">
-            <div className="lg:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-700">Search</label>
-              <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-                <SearchIcon className="h-4 w-4 text-slate-400" />
-                <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by title or site" className="border-0 bg-transparent px-0 shadow-none" />
+        <div className="mt-6 md:mt-8 rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+          <SectionHeader title="Filters" description="Refine opportunities" action={<div className="flex items-center gap-2 text-xs md:text-sm text-slate-500"><Filter className="h-4 w-4" /> Live results</div>} />
+          <div className="mt-5 grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-xs md:text-sm font-medium text-slate-700">Search</label>
+              <div className="flex items-center gap-2 rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 min-h-10">
+                <SearchIcon className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search tenders..."
+                  className="border-0 bg-transparent px-0 shadow-none text-sm"
+                />
               </div>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Sector</label>
-              <select value={sectorFilter} onChange={(e) => setSectorFilter(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+              <label className="mb-2 block text-xs md:text-sm font-medium text-slate-700">Sector</label>
+              <select
+                value={sectorFilter}
+                onChange={(e) => setSectorFilter(e.target.value)}
+                className="w-full rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs md:text-sm text-slate-700 min-h-10"
+              >
                 <option value="all">All sectors</option>
-                {sectors.map((sector) => <option key={sector} value={sector}>{sector}</option>)}
+                {sectors.map((sector) => (
+                  <option key={sector} value={sector}>{sector}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Status</label>
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+              <label className="mb-2 block text-xs md:text-sm font-medium text-slate-700">Status</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs md:text-sm text-slate-700 min-h-10"
+              >
                 <option value="all">All statuses</option>
-                {statusOptions.map((status) => <option key={status} value={status}>{status === 'closing_soon' ? 'Closing soon' : status.charAt(0).toUpperCase() + status.slice(1)}</option>)}
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === 'closing_soon' ? 'Closing soon' : status.charAt(0).toUpperCase() + status.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Min budget (K)</label>
-              <Input type="number" value={minBudget} onChange={(e) => setMinBudget(e.target.value)} placeholder="0" className="w-full" />
+              <label className="mb-2 block text-xs md:text-sm font-medium text-slate-700">Min budget</label>
+              <Input
+                type="number"
+                value={minBudget}
+                onChange={(e) => setMinBudget(e.target.value)}
+                placeholder="0"
+                className="w-full text-xs md:text-sm min-h-10"
+              />
             </div>
           </div>
         </div>
 
-        <div className="mt-8 space-y-4">
-          {filteredTenders.map((tender) => (
-            <div key={tender.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-xl font-semibold text-slate-900">{tender.title}</h2>
-                    <StatusBadge status={tender.status} />
-                  </div>
-                  <p className="mt-2 max-w-2xl text-sm text-slate-600">{tender.description}</p>
-                </div>
-                <Link href={`/tenders/${tender.id}`}><Button className="bg-slate-900 text-white hover:bg-slate-800">Review</Button></Link>
-              </div>
-              <div className="mt-5 grid gap-4 md:grid-cols-4">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs uppercase tracking-[0.2em] text-slate-500">Mining site</p><p className="mt-2 font-semibold text-slate-900">{tender.miningSite}</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs uppercase tracking-[0.2em] text-slate-500">Budget</p><p className="mt-2 font-semibold text-slate-900">K{(tender.budget / 1000000).toFixed(1)}M</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs uppercase tracking-[0.2em] text-slate-500">Local content</p><p className="mt-2 font-semibold text-slate-900">{tender.minLocalContent}%</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs uppercase tracking-[0.2em] text-slate-500">Deadline</p><p className="mt-2 font-semibold text-slate-900">{tender.deadline.toLocaleDateString()}</p></div>
-              </div>
+        <div className="mt-6 md:mt-8 space-y-3 md:space-y-4">
+          {filteredTenders.length === 0 ? (
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-8 text-center">
+              <p className="text-slate-600">No tenders match your filters.</p>
             </div>
-          ))}
+          ) : (
+            filteredTenders.map((tender) => (
+              <div key={tender.id} className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm hover:shadow-md transition">
+                <div className="flex flex-col gap-3 md:gap-4">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
+                        <h2 className="text-base md:text-lg font-semibold text-slate-900">
+                          {tender.title}
+                        </h2>
+                        <StatusBadge status={tender.status} />
+                      </div>
+                      <p className="text-xs md:text-sm text-slate-600 line-clamp-2">{tender.description}</p>
+                    </div>
+                    <Link href={`/tenders/${tender.id}`} className="flex-shrink-0 w-full md:w-auto">
+                      <Button className="w-full md:w-auto bg-slate-900 text-white hover:bg-slate-800 min-h-10">
+                        Review
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-3 md:p-4">
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">Site</p>
+                      <p className="mt-1 md:mt-2 text-xs md:text-base font-semibold text-slate-900">{tender.miningSite}</p>
+                    </div>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-3 md:p-4">
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">Budget</p>
+                      <p className="mt-1 md:mt-2 text-xs md:text-base font-semibold text-slate-900">K{(tender.budget / 1000000).toFixed(1)}M</p>
+                    </div>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-3 md:p-4">
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">Local content</p>
+                      <p className="mt-1 md:mt-2 text-xs md:text-base font-semibold text-slate-900">{tender.minLocalContent}%</p>
+                    </div>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-3 md:p-4">
+                      <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">Deadline</p>
+                      <p className="mt-1 md:mt-2 text-xs md:text-base font-semibold text-slate-900">{tender.deadline.toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </main>
     </div>
