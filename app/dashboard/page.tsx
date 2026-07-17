@@ -146,12 +146,15 @@ export default function DashboardPage() {
     )
   }
 
+  const isAdmin = user?.role === 'admin'
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <Navigation />
 
-      <div className="mx-auto flex max-w-7xl gap-6 px-6 py-8 lg:px-8">
-        <aside className="hidden w-64 shrink-0 lg:block">
+      <div className="mx-auto flex max-w-7xl gap-4 md:gap-6 px-4 py-4 md:px-6 md:py-8 lg:px-8">
+        {/* Sidebar - Hidden on mobile */}
+        <aside className="hidden w-56 lg:w-64 shrink-0 lg:block">
           <div className="sticky top-28 space-y-4">
             <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
@@ -190,40 +193,62 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           <PageHeader
-            eyebrow="Mining Company Dashboard"
-            title="Mining operations overview"
-            description="Manage tenders, supplier relationships, consortiums, compliance, and procurement intelligence from a single secure workspace."
+            eyebrow={isAdmin ? "Admin Dashboard" : "Supplier Dashboard"}
+            title={isAdmin ? "Procurement management" : "My opportunities"}
+            description={isAdmin ? "Post tenders, manage suppliers, and track compliance." : "Find and apply to tenders, collaborate with suppliers in consortia."}
             actions={
-              <>
-                <QuickActionButton href="/tenders" label="Create Tender" icon={<Plus className="h-4 w-4" />} />
-                <QuickActionButton href="/consortia" label="Approve Consortium" icon={<Users2 className="h-4 w-4" />} />
-                <QuickActionButton href="/compliance" label="Generate Report" icon={<FileText className="h-4 w-4" />} />
-              </>
+              isAdmin ? (
+                <>
+                  <QuickActionButton href="/admin/create-tender" label="New Tender" icon={<Plus className="h-4 w-4" />} />
+                  <QuickActionButton href="/admin/manage-tenders" label="Manage" icon={<FileText className="h-4 w-4" />} />
+                </>
+              ) : (
+                <>
+                  <QuickActionButton href="/saved-tenders" label="Saved" icon={<FileText className="h-4 w-4" />} />
+                  <QuickActionButton href="/consortia/create" label="New Consortium" icon={<Users2 className="h-4 w-4" />} />
+                </>
+              )
             }
           />
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <ShieldCheck className="h-4 w-4 text-[#C78A2C]" />
-              <span>Last updated 2 minutes ago • Audit trail enabled • Role-based access active</span>
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm text-xs sm:text-sm">
+            <div className="flex items-center gap-2 text-slate-600">
+              <ShieldCheck className="h-4 w-4 text-[#C78A2C]" flex-shrink-0 />
+              <span className="hidden sm:inline">Last updated 2 min ago • Secure access active</span>
+              <span className="sm:hidden">Secure access active</span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <BellRing className="h-4 w-4" />
-              <span>8 approvals pending</span>
-            </div>
+            {isAdmin && (
+              <div className="flex items-center gap-2 font-medium text-slate-700">
+                <BellRing className="h-4 w-4" flex-shrink-0 />
+                <span>8 pending</span>
+              </div>
+            )}
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Active tenders" value={openTenders.length} trend="3 closing soon" icon={<BriefcaseBusiness className="h-4 w-4" />} accent="navy" />
-            <MetricCard label="Pending evaluations" value={closingSoonTenders.length + 2} trend="High priority review" icon={<Activity className="h-4 w-4" />} accent="gold" />
-            <MetricCard label="Verified suppliers" value={MOCK_COMPANIES.length} trend="4.8 average rating" icon={<Users2 className="h-4 w-4" />} accent="green" />
-            <MetricCard label="Active consortiums" value={userConsortia.length} trend="Cross-functional collaboration" icon={<ClipboardList className="h-4 w-4" />} accent="slate" />
+          <div className="mt-6 grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+            {isAdmin ? (
+              <>
+                <MetricCard label="Active tenders" value={openTenders.length} trend="3 closing soon" icon={<BriefcaseBusiness className="h-4 w-4" />} accent="navy" />
+                <MetricCard label="Pending review" value={closingSoonTenders.length + 2} trend="High priority" icon={<Activity className="h-4 w-4" />} accent="gold" />
+                <MetricCard label="Verified suppliers" value={MOCK_COMPANIES.length} trend="4.8 rating" icon={<Users2 className="h-4 w-4" />} accent="green" />
+                <MetricCard label="Active consortiums" value={userConsortia.length} trend="Collaboration" icon={<ClipboardList className="h-4 w-4" />} accent="slate" />
+              </>
+            ) : (
+              <>
+                <MetricCard label="Tenders available" value={openTenders.length} trend="3 closing soon" icon={<BriefcaseBusiness className="h-4 w-4" />} accent="navy" />
+                <MetricCard label="My consortiums" value={userConsortia.length} trend="Active" icon={<Users2 className="h-4 w-4" />} accent="gold" />
+                <MetricCard label="Saved tenders" value="12" trend="For later" icon={<FileText className="h-4 w-4" />} accent="green" />
+                <MetricCard label="Applications" value="5" trend="Pending" icon={<ClipboardList className="h-4 w-4" />} accent="slate" />
+              </>
+            )}
           </div>
 
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-            <section className="space-y-6">
+          {isAdmin ? (
+            // Admin Dashboard Layout
+            <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+              <section className="space-y-6 min-w-0">
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <SectionHeader title="Procurement pipeline" description="Operational oversight across the tender lifecycle" />
                 <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -287,137 +312,89 @@ export default function DashboardPage() {
               </div>
             </aside>
           </div>
+          ) : (
+            // Supplier Dashboard Layout
+            <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.85fr]">
+              <section className="space-y-6 min-w-0">
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+                  <SectionHeader title="Available tenders" description="Open opportunities for your consortium" />
+                  <div className="mt-5">
+                    <EnterpriseTable
+                      columns={[
+                        { key: 'title', label: 'Opportunity' },
+                        { key: 'budget', label: 'Budget' },
+                        { key: 'closing', label: 'Closes' },
+                        { key: 'status', label: 'Status' },
+                      ]}
+                      rows={filteredTenders.slice(0, 5).map((tender) => ({
+                        id: tender.id,
+                        title: <Link href={`/tenders/${tender.id}`} className="font-semibold text-slate-900 hover:text-slate-700 underline">{tender.title}</Link>,
+                        budget: <span className="font-semibold text-slate-900">K {(tender.budget / 1000000).toFixed(1)}M</span>,
+                        closing: <span className="text-slate-600">{tender.deadline.toLocaleDateString('en-ZM')}</span>,
+                        status: <StatusBadge status={tender.status} />,
+                      }))}
+                      emptyMessage="No tenders available yet."
+                    />
+                  </div>
+                  <Link href="/tenders" className="mt-4 inline-block">
+                    <Button variant="outline" className="text-sm">View all tenders</Button>
+                  </Link>
+                </div>
 
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Procurement intelligence" description="Operational performance and spend patterns" />
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <ChartCard title="Monthly spend" description="Procurement expenditure trend" value="K 12.4M">
-                  <TrendSparkline data={[24, 28, 32, 30, 35, 40]} color="#0B1F35" />
-                </ChartCard>
-                <ChartCard title="Supplier participation" description="Registered suppliers per month" value="+18%">
-                  <div className="flex items-end gap-2 pt-2">
-                    {[42, 58, 53, 69, 74, 81].map((value, index) => (
-                      <div key={value} className="flex-1 rounded-t-xl bg-slate-100" style={{ height: `${value / 1.2}px` }}>
-                        <div className="h-full rounded-t-xl bg-[#0B1F35]" style={{ height: `${(value / 90) * 100}%` }} />
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+                  <SectionHeader title="My consortiums" description="Collaborate with other suppliers" />
+                  <div className="mt-5 space-y-3">
+                    {userConsortia.map((consortium) => (
+                      <div key={consortium.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                          <div className="min-w-0">
+                            <Link href={`/consortia/${consortium.id}`}>
+                              <p className="text-sm font-semibold text-slate-900 hover:text-slate-700">{consortium.name}</p>
+                            </Link>
+                            <p className="mt-1 text-xs md:text-sm text-slate-600">{consortium.members.length} members</p>
+                          </div>
+                          <StatusBadge status={consortium.status} />
+                        </div>
                       </div>
                     ))}
                   </div>
-                </ChartCard>
-                <ChartCard title="Average response time" description="Supplier cycle times" value="4.2 days">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">Average response time improved by 12% after the latest onboarding workflow.</div>
-                </ChartCard>
-                <ChartCard title="Budget utilization" description="Current approved usage" value="84%">
-                  <div className="mt-2 flex items-center gap-3">
-                    <div className="h-3 flex-1 rounded-full bg-slate-200">
-                      <div className="h-3 rounded-full bg-[#0E8A62]" style={{ width: '84%' }} />
+                  <Link href="/consortia/create" className="mt-4 inline-block">
+                    <Button className="text-sm bg-slate-900 text-white hover:bg-slate-800">Create consortium</Button>
+                  </Link>
+                </div>
+              </section>
+
+              <aside className="space-y-6 min-w-0">
+                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+                  <SectionHeader title="Recent activity" description="Your bidding activity" />
+                  <div className="mt-5 space-y-3">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                      <p className="text-xs font-semibold text-slate-900">Bid submitted</p>
+                      <p className="text-xs text-slate-600 mt-1">Konkola equipment tender</p>
+                      <p className="text-xs text-slate-500 mt-2">2 hours ago</p>
                     </div>
-                    <span className="text-sm font-semibold text-slate-700">K 8.4M / K 10M</span>
-                  </div>
-                </ChartCard>
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Notifications" description="Field and executive updates" />
-              <div className="mt-5">
-                <NotificationPanel groups={notifications} />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Supplier activity" description="Recent supplier behaviour and verification health" />
-              <div className="mt-5 grid gap-3">
-                {supplierActivity.map((supplier) => (
-                  <div key={supplier.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-slate-900">{supplier.name}</p>
-                        <p className="mt-1 text-sm text-slate-600">{supplier.specialization}</p>
-                      </div>
-                      <StatusBadge status={supplier.verification} />
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                      <p className="text-xs font-semibold text-slate-900">Tender saved</p>
+                      <p className="text-xs text-slate-600 mt-1">Maintenance services package</p>
+                      <p className="text-xs text-slate-500 mt-2">Yesterday</p>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-3 text-sm text-slate-600">
-                      <span>{supplier.province}</span>
-                      <span>•</span>
-                      <span>Rating {supplier.rating}</span>
-                    </div>
-                    <p className="mt-3 text-sm text-slate-500">{supplier.activity}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <SectionHeader title="Consortium workspace" description="Active collaboration and document readiness" />
-                <div className="mt-5 space-y-3">
-                  {MOCK_CONSORTIA.slice(0, 2).map((consortium) => (
-                    <div key={consortium.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900">{consortium.name}</p>
-                          <p className="mt-1 text-sm text-slate-600">{consortium.members.length} members • {consortium.combinedCapabilities.slice(0, 2).join(', ')}</p>
-                        </div>
-                        <StatusBadge status={consortium.status} />
-                      </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">Compliance healthy</span>
-                        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">Tender assigned</span>
-                      </div>
-                    </div>
-                  ))}
                 </div>
-              </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <SectionHeader title="Documents center" description="Contracts, certificates and evidence packs" />
-                <div className="mt-5 space-y-3">
-                  {documents.map((document) => (
-                    <DocumentCard key={document.title} title={document.title} description={document.description} meta={document.meta} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Recent activity" description="Operational timeline for the last 24 hours" />
-              <div className="mt-5">
-                <ActivityFeed items={activityItems} />
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Upcoming deadlines" description="Calendar-driven procurement milestones" />
-              <div className="mt-5 space-y-3">
-                <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-white p-2 text-slate-700"><CalendarDays className="h-4 w-4" /></div>
-                    <div><p className="text-sm font-semibold text-slate-900">Tender closure</p><p className="text-sm text-slate-600">Konkola equipment package</p></div>
+                <div className="rounded-3xl border border-slate-200 bg-slate-900 p-4 md:p-6 text-slate-100 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-[#C78A2C]" />
+                    <p className="text-sm font-semibold">Supplier tips</p>
                   </div>
-                  <span className="text-sm font-semibold text-slate-700">Tomorrow</span>
+                  <ul className="mt-4 space-y-2 text-xs md:text-sm text-slate-300">
+                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Join a consortium to bid on larger tenders.</li>
+                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Update your compliance certificates regularly.</li>
+                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Check your saved tenders for new matches.</li>
+                  </ul>
                 </div>
-                <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-white p-2 text-slate-700"><CalendarDays className="h-4 w-4" /></div>
-                    <div><p className="text-sm font-semibold text-slate-900">Compliance renewal</p><p className="text-sm text-slate-600">Safety certificates review</p></div>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-700">5 days</span>
-                </div>
-                <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-white p-2 text-slate-700"><CalendarDays className="h-4 w-4" /></div>
-                    <div><p className="text-sm font-semibold text-slate-900">Supplier meeting</p><p className="text-sm text-slate-600">Northstar Logistics onboarding</p></div>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-700">Next week</span>
-                </div>
-              </div>
+              </aside>
             </div>
-          </div>
+          )}
         </main>
       </div>
     </div>
