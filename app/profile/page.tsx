@@ -1,13 +1,14 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useAuth } from '@/lib/AuthContext'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import Navigation from '@/components/Navigation'
 import { MOCK_COMPANIES } from '@/lib/mockData'
 import { Button } from '@/components/ui/button'
-import { PageHeader, MetricCard, SectionHeader } from '@/components/ui/enterprise'
-import { FileText, ShieldCheck, BadgeCheck } from 'lucide-react'
+import { PageHeader, SectionHeader } from '@/components/ui/enterprise'
+import { Edit3, Globe, Mail, Phone, MapPin, Award, Users, TrendingUp } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ProfilePage() {
   const { user, loading } = useAuth()
@@ -26,51 +27,157 @@ export default function ProfilePage() {
   const company = MOCK_COMPANIES.find((c) => c.id === user.companyId)
 
   if (!company) {
-    return <div className="min-h-screen bg-slate-50"><Navigation /><main className="mx-auto max-w-7xl px-6 py-8"><div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm"><p className="text-slate-600">Company profile not found</p><Button className="mt-6" onClick={() => router.push('/dashboard')}>Back to dashboard</Button></div></main></div>
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <Navigation />
+        <main className="mx-auto max-w-7xl px-6 py-8">
+          <div className="text-center">Company not found</div>
+        </main>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Navigation />
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <PageHeader eyebrow="Supplier profile" title={company.name} description={company.description} actions={<Button>Edit profile</Button>} />
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <MetricCard label="Profile completion" value="100%" trend="All core fields captured" icon={<BadgeCheck className="h-4 w-4" />} accent="green" />
-          <MetricCard label="Local content" value={`${company.localContentPercentage}%`} trend="Meets threshold" icon={<ShieldCheck className="h-4 w-4" />} accent="gold" />
-          <MetricCard label="Documents" value={company.certifications.length} trend="Ready for review" icon={<FileText className="h-4 w-4" />} accent="navy" />
+      <main className="mx-auto max-w-4xl px-6 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <PageHeader eyebrow="My profile" title={company.name} description="Your company information and credentials" />
+          <Link href="/settings">
+            <Button className="gap-2 bg-slate-900 text-white hover:bg-slate-800">
+              <Edit3 className="h-4 w-4" />
+              Edit profile
+            </Button>
+          </Link>
         </div>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <div className="grid gap-6 lg:grid-cols-[1fr_0.7fr]">
           <div className="space-y-6">
+            {/* Company Info */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Company overview" description="Operational and regulatory profile" />
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm text-slate-500">Sector</p><p className="mt-2 font-semibold text-slate-900">{company.sector}</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm text-slate-500">Location</p><p className="mt-2 font-semibold text-slate-900">{company.location}</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm text-slate-500">Employees</p><p className="mt-2 font-semibold text-slate-900">{company.employees}</p></div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm text-slate-500">Registration</p><p className="mt-2 font-semibold text-slate-900">{company.registrationNumber}</p></div>
+              <SectionHeader title="Company information" description="Public profile details" />
+              <div className="mt-5 space-y-4">
+                <div>
+                  <p className="text-sm text-slate-600 mb-1">Registration number</p>
+                  <p className="text-lg font-semibold text-slate-900">{company.registrationNumber}</p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-sm text-slate-600 mb-1">Location</p>
+                    <p className="text-base font-semibold text-slate-900 flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-slate-400" />
+                      {company.location}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 mb-1">Sector</p>
+                    <p className="text-base font-semibold text-slate-900">{company.sector}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-600 mb-2">Contact information</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-slate-900">
+                      <Mail className="h-4 w-4 text-slate-400" />
+                      <a href={`mailto:${company.contactEmail}`} className="hover:text-slate-600">
+                        {company.contactEmail}
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-900">
+                      <Phone className="h-4 w-4 text-slate-400" />
+                      {company.contactPhone}
+                    </div>
+                    {company.website && (
+                      <div className="flex items-center gap-2 text-slate-900">
+                        <Globe className="h-4 w-4 text-slate-400" />
+                        <a href={company.website} target="_blank" rel="noopener noreferrer" className="hover:text-slate-600">
+                          {company.website}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-600 mb-2">Description</p>
+                  <p className="text-slate-700">{company.description}</p>
+                </div>
               </div>
             </div>
 
+            {/* Certifications */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Capabilities" description="Services available for procurement consideration" />
-              <div className="mt-5 flex flex-wrap gap-2">{company.capabilities.map((cap) => <span key={cap} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700">{cap}</span>)}</div>
+              <SectionHeader title="Certifications" description="Active credentials and certifications" />
+              <div className="mt-5 space-y-3">
+                {company.certifications.map((cert) => (
+                  <div key={cert} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <Award className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                    <p className="font-medium text-slate-900">{cert}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Capabilities */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <SectionHeader title="Core capabilities" description="Services and expertise" />
+              <div className="mt-5 flex flex-wrap gap-2">
+                {company.capabilities.map((cap) => (
+                  <span key={cap} className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">
+                    {cap}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
+          {/* Sidebar */}
           <div className="space-y-6">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <SectionHeader title="Contact" description="Primary contacts for procurement and compliance" />
-              <div className="mt-5 space-y-4 text-sm text-slate-600">
-                <div><p className="text-slate-500">Primary contact</p><p className="mt-1 font-semibold text-slate-900">{company.contactPerson}</p></div>
-                <div><p className="text-slate-500">Email</p><p className="mt-1 font-semibold text-slate-900">{company.contactEmail}</p></div>
-                <div><p className="text-slate-500">Phone</p><p className="mt-1 font-semibold text-slate-900">{company.contactPhone}</p></div>
+            {/* Stats */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
+                <p className="text-sm text-slate-600">Local content</p>
+                <p className="text-2xl font-semibold text-slate-900">{company.localContentPercentage}%</p>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
+                <div className="flex items-center gap-2 text-slate-600">
+                  <Users className="h-4 w-4" />
+                  <span className="text-sm">Active consortia</span>
+                </div>
+                <p className="text-2xl font-semibold text-slate-900">2</p>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50">
+                <div className="flex items-center gap-2 text-slate-600">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="text-sm">Success rate</span>
+                </div>
+                <p className="text-2xl font-semibold text-emerald-600">72%</p>
               </div>
             </div>
-            <div className="rounded-3xl border border-slate-200 bg-slate-900 p-6 text-slate-100 shadow-sm">
-              <p className="text-sm font-semibold text-white">Verified content</p>
-              <div className="mt-4 flex flex-wrap gap-2">{company.certifications.map((cert) => <span key={cert} className="rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs font-medium text-slate-300">{cert}</span>)}</div>
+
+            {/* Member Since */}
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+              <p className="text-sm text-slate-600">Member since</p>
+              <p className="text-lg font-semibold text-slate-900 mt-2">{new Date(company.joinedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
+              <Link href="/consortia/create">
+                <Button variant="outline" className="w-full gap-2">
+                  <Users className="h-4 w-4" />
+                  Create consortium
+                </Button>
+              </Link>
+              <Link href="/tenders">
+                <Button className="w-full bg-slate-900 text-white hover:bg-slate-800">
+                  Browse tenders
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
