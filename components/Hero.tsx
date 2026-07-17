@@ -35,7 +35,7 @@ export function Hero() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
-                href="/register"
+                href="/apply"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
                 Start for Free

@@ -61,7 +61,7 @@ export function Header() {
             Login
           </Link>
           <Link
-            href="/register"
+            href="/apply"
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
           >
             Join Platform
@@ -99,7 +99,7 @@ export function Header() {
             <Link href="/login" className="block px-4 py-2 text-center text-primary border border-primary rounded-lg text-sm font-medium">
               Login
             </Link>
-            <Link href="/register" className="block px-4 py-2 bg-primary text-white text-center rounded-lg text-sm font-medium">
+            <Link href="/apply" className="block px-4 py-2 bg-primary text-white text-center rounded-lg text-sm font-medium">
               Join Platform
             </Link>
           </div>

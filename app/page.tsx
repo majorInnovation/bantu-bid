@@ -95,10 +95,10 @@ export default function Home() {
                 </li>
               </ul>
               <Link
-                href="/register"
+                href="/apply"
                 className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
               >
-                Register as Supplier
+                Apply as Supplier
               </Link>
             </div>
 
@@ -129,10 +129,10 @@ export default function Home() {
                 </li>
               </ul>
               <Link
-                href="/register"
+                href="/apply"
                 className="inline-block px-6 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors font-medium"
               >
-                Register as Mining Company
+                Apply as Mining Company
               </Link>
             </div>
           </div>
