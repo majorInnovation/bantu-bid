@@ -152,9 +152,10 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Navigation />
 
-      <div className="mx-auto flex max-w-7xl gap-4 md:gap-6 px-4 py-4 md:px-6 md:py-8 lg:px-8">
-        {/* Sidebar - Hidden on mobile */}
-        <aside className="hidden w-56 lg:w-64 shrink-0 lg:block">
+      <div className="mx-auto w-full px-3 py-3 md:px-6 md:py-6 lg:px-8">
+        <div className="flex gap-4 md:gap-6 max-w-7xl mx-auto">
+          {/* Sidebar - Hidden on mobile */}
+          <aside className="hidden w-56 lg:w-64 shrink-0 lg:block">
           <div className="sticky top-28 space-y-4">
             <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
@@ -193,25 +194,27 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        <main className="flex-1 min-w-0">
-          <PageHeader
-            eyebrow={isAdmin ? "Admin Dashboard" : "Supplier Dashboard"}
-            title={isAdmin ? "Procurement management" : "My opportunities"}
-            description={isAdmin ? "Post tenders, manage suppliers, and track compliance." : "Find and apply to tenders, collaborate with suppliers in consortia."}
-            actions={
-              isAdmin ? (
-                <>
-                  <QuickActionButton href="/admin/create-tender" label="New Tender" icon={<Plus className="h-4 w-4" />} />
-                  <QuickActionButton href="/admin/manage-tenders" label="Manage" icon={<FileText className="h-4 w-4" />} />
-                </>
-              ) : (
-                <>
-                  <QuickActionButton href="/saved-tenders" label="Saved" icon={<FileText className="h-4 w-4" />} />
-                  <QuickActionButton href="/consortia/create" label="New Consortium" icon={<Users2 className="h-4 w-4" />} />
-                </>
-              )
-            }
-          />
+        <main className="flex-1 min-w-0 w-full">
+          <div className="px-2 md:px-0">
+            <PageHeader
+              eyebrow={isAdmin ? "Admin Dashboard" : "Supplier Dashboard"}
+              title={isAdmin ? "Procurement management" : "My opportunities"}
+              description={isAdmin ? "Post tenders, manage suppliers, and track compliance." : "Find and apply to tenders, collaborate with suppliers in consortia."}
+              actions={
+                isAdmin ? (
+                  <>
+                    <QuickActionButton href="/admin/create-tender" label="New Tender" icon={<Plus className="h-4 w-4" />} />
+                    <QuickActionButton href="/admin/manage-tenders" label="Manage" icon={<FileText className="h-4 w-4" />} />
+                  </>
+                ) : (
+                  <>
+                    <QuickActionButton href="/saved-tenders" label="Saved" icon={<FileText className="h-4 w-4" />} />
+                    <QuickActionButton href="/consortia/create" label="New Consortium" icon={<Users2 className="h-4 w-4" />} />
+                  </>
+                )
+              }
+            />
+          </div>
 
           <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm text-xs sm:text-sm">
             <div className="flex items-center gap-2 text-slate-600">
@@ -247,19 +250,19 @@ export default function DashboardPage() {
 
           {isAdmin ? (
             // Admin Dashboard Layout
-            <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-              <section className="space-y-6 min-w-0">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <SectionHeader title="Procurement pipeline" description="Operational oversight across the tender lifecycle" />
-                <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-6 md:mt-8 grid gap-4 md:gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+              <section className="space-y-4 md:space-y-6 min-w-0">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
+                  <SectionHeader title="Procurement pipeline" description="Operational oversight across the tender lifecycle" />
+                  <div className="mt-4 md:mt-5 grid gap-2 md:gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-4">
                   {pipelineSteps.map((step) => (
-                    <div key={step.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-semibold text-slate-900">{step.label}</p>
-                        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600">{step.count}</span>
+                    <div key={step.label} className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-2 md:p-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs md:text-sm font-semibold text-slate-900">{step.label}</p>
+                        <span className="rounded-full bg-white px-2 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-semibold text-slate-600">{step.count}</span>
                       </div>
-                      <p className="mt-3 text-xl font-semibold text-slate-900">K {step.value.toLocaleString()}</p>
-                      <div className="mt-3 h-2 rounded-full bg-slate-200">
+                      <p className="mt-2 md:mt-3 text-base md:text-xl font-semibold text-slate-900">K {(step.value / 1000000).toFixed(1)}M</p>
+                      <div className="mt-2 md:mt-3 h-2 rounded-full bg-slate-200">
                         <div className="h-2 rounded-full bg-[#0B1F35]" style={{ width: `${step.progress}%` }} />
                       </div>
                     </div>
@@ -267,58 +270,58 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                  <SectionHeader title="Active tender table" description="Search, filter and act on live procurement activity" />
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Search tenders" />
-                    <FilterBar filters={[{ label: 'All', value: 'all' }, { label: 'Open', value: 'open' }, { label: 'Closing', value: 'closing_soon' }, { label: 'Awarded', value: 'awarded' }]} activeValue={filter} onChange={(value) => setFilter(value as TenderFilter)} />
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
+                  <div className="flex flex-col gap-3 md:gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <SectionHeader title="Active tenders" description="Search, filter and act on live procurement activity" />
+                    <div className="flex flex-col gap-2 md:gap-3 sm:flex-row">
+                      <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Search..." />
+                      <FilterBar filters={[{ label: 'All', value: 'all' }, { label: 'Open', value: 'open' }, { label: 'Closing', value: 'closing_soon' }, { label: 'Awarded', value: 'awarded' }]} activeValue={filter} onChange={(value) => setFilter(value as TenderFilter)} />
+                    </div>
+                  </div>
+                  <div className="mt-4 md:mt-5 overflow-x-auto">
+                    <EnterpriseTable columns={[{ key: 'id', label: 'ID' }, { key: 'title', label: 'Tender' }, { key: 'budget', label: 'Budget' }, { key: 'closing', label: 'Close' }, { key: 'applications', label: 'Apps' }, { key: 'status', label: 'Status' }]} rows={tenderTableRows} emptyMessage="No tenders match the selected filters." />
                   </div>
                 </div>
-                <div className="mt-5">
-                  <EnterpriseTable columns={[{ key: 'id', label: 'Tender ID' }, { key: 'title', label: 'Tender Title' }, { key: 'category', label: 'Category' }, { key: 'budget', label: 'Budget' }, { key: 'closing', label: 'Closing Date' }, { key: 'applications', label: 'Applications' }, { key: 'status', label: 'Status' }, { key: 'owner', label: 'Assigned Officer' }, { key: 'actions', label: 'Actions' }]} rows={tenderTableRows} emptyMessage="No tenders match the selected filters." />
-                </div>
-              </div>
-            </section>
+              </section>
 
-            <aside className="space-y-6">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <SectionHeader title="Compliance center" description="Critical controls and deadlines" />
-                <div className="mt-5 space-y-3">
-                  {complianceItems.map((item) => (
-                    <ComplianceBadge key={item.label} label={item.label} value={item.value} tone={item.tone} />
-                  ))}
+              <aside className="space-y-4 md:space-y-6">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
+                  <SectionHeader title="Compliance" description="Critical controls and deadlines" />
+                  <div className="mt-3 md:mt-5 space-y-2 md:space-y-3">
+                    {complianceItems.map((item) => (
+                      <ComplianceBadge key={item.label} label={item.label} value={item.value} tone={item.tone} />
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <SectionHeader title="Approvals" description="Actions requiring attention" />
-                <div className="mt-5 space-y-3">
-                  <ApprovalCard title="Consortium request" description="Northstar + Apex joint bid pending review" />
-                  <ApprovalCard title="Supplier application" description="Three new suppliers need onboarding checks" />
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
+                  <SectionHeader title="Approvals" description="Actions requiring attention" />
+                  <div className="mt-3 md:mt-5 space-y-2 md:space-y-3">
+                    <ApprovalCard title="Consortium request" description="Northstar + Apex joint bid pending review" />
+                    <ApprovalCard title="Supplier application" description="Three new suppliers need onboarding checks" />
+                  </div>
                 </div>
-              </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-slate-900 p-6 text-slate-100 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#C78A2C]" />
-                  <p className="text-sm font-semibold">Smart procurement insights</p>
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-slate-900 p-3 md:p-6 text-slate-100 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-[#C78A2C]" />
+                    <p className="text-xs md:text-sm font-semibold">Smart insights</p>
+                  </div>
+                  <div className="mt-3 md:mt-4 space-y-2 md:space-y-3 text-xs md:text-sm text-slate-300">
+                    <div className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Suppliers matched to next tender.</div>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Risk alerts trending down.</div>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Budget utilization within thresholds.</div>
+                  </div>
                 </div>
-                <div className="mt-4 space-y-3 text-sm text-slate-300">
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Recommended suppliers matched to the next tender window.</div>
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Risk alerts are trending down after recent compliance updates.</div>
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Budget utilization remains within approved thresholds.</div>
-                </div>
-              </div>
-            </aside>
-          </div>
+              </aside>
+            </div>
           ) : (
             // Supplier Dashboard Layout
-            <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.85fr]">
-              <section className="space-y-6 min-w-0">
-                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+            <div className="mt-6 md:mt-8 grid gap-4 md:gap-6 lg:grid-cols-[1fr_0.85fr]">
+              <section className="space-y-4 md:space-y-6 min-w-0">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
                   <SectionHeader title="Available tenders" description="Open opportunities for your consortium" />
-                  <div className="mt-5">
+                  <div className="mt-3 md:mt-5 overflow-x-auto">
                     <EnterpriseTable
                       columns={[
                         { key: 'title', label: 'Opportunity' },
@@ -328,74 +331,75 @@ export default function DashboardPage() {
                       ]}
                       rows={filteredTenders.slice(0, 5).map((tender) => ({
                         id: tender.id,
-                        title: <Link href={`/tenders/${tender.id}`} className="font-semibold text-slate-900 hover:text-slate-700 underline">{tender.title}</Link>,
-                        budget: <span className="font-semibold text-slate-900">K {(tender.budget / 1000000).toFixed(1)}M</span>,
-                        closing: <span className="text-slate-600">{tender.deadline.toLocaleDateString('en-ZM')}</span>,
+                        title: <Link href={`/tenders/${tender.id}`} className="font-semibold text-slate-900 hover:text-slate-700 underline text-xs md:text-sm">{tender.title}</Link>,
+                        budget: <span className="font-semibold text-slate-900 text-xs md:text-sm">K {(tender.budget / 1000000).toFixed(1)}M</span>,
+                        closing: <span className="text-slate-600 text-xs md:text-sm">{tender.deadline.toLocaleDateString('en-ZM')}</span>,
                         status: <StatusBadge status={tender.status} />,
                       }))}
                       emptyMessage="No tenders available yet."
                     />
                   </div>
-                  <Link href="/tenders" className="mt-4 inline-block">
-                    <Button variant="outline" className="text-sm">View all tenders</Button>
+                  <Link href="/tenders" className="mt-3 md:mt-4 inline-block">
+                    <Button variant="outline" className="text-xs md:text-sm h-9">View all tenders</Button>
                   </Link>
                 </div>
 
-                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
                   <SectionHeader title="My consortiums" description="Collaborate with other suppliers" />
-                  <div className="mt-5 space-y-3">
+                  <div className="mt-3 md:mt-5 space-y-2 md:space-y-3">
                     {userConsortia.map((consortium) => (
-                      <div key={consortium.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                      <div key={consortium.id} className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-3">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                           <div className="min-w-0">
                             <Link href={`/consortia/${consortium.id}`}>
-                              <p className="text-sm font-semibold text-slate-900 hover:text-slate-700">{consortium.name}</p>
+                              <p className="text-xs md:text-sm font-semibold text-slate-900 hover:text-slate-700">{consortium.name}</p>
                             </Link>
-                            <p className="mt-1 text-xs md:text-sm text-slate-600">{consortium.members.length} members</p>
+                            <p className="mt-0.5 md:mt-1 text-[11px] md:text-xs text-slate-600">{consortium.members.length} members</p>
                           </div>
                           <StatusBadge status={consortium.status} />
                         </div>
                       </div>
                     ))}
                   </div>
-                  <Link href="/consortia/create" className="mt-4 inline-block">
-                    <Button className="text-sm bg-slate-900 text-white hover:bg-slate-800">Create consortium</Button>
+                  <Link href="/consortia/create" className="mt-3 md:mt-4 inline-block">
+                    <Button className="text-xs md:text-sm h-9 bg-slate-900 text-white hover:bg-slate-800">Create consortium</Button>
                   </Link>
                 </div>
               </section>
 
-              <aside className="space-y-6 min-w-0">
-                <div className="rounded-3xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+              <aside className="space-y-4 md:space-y-6 min-w-0">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-white p-3 md:p-6 shadow-sm">
                   <SectionHeader title="Recent activity" description="Your bidding activity" />
-                  <div className="mt-5 space-y-3">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                      <p className="text-xs font-semibold text-slate-900">Bid submitted</p>
-                      <p className="text-xs text-slate-600 mt-1">Konkola equipment tender</p>
-                      <p className="text-xs text-slate-500 mt-2">2 hours ago</p>
+                  <div className="mt-3 md:mt-5 space-y-2 md:space-y-3">
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-2 md:p-3">
+                      <p className="text-[11px] md:text-xs font-semibold text-slate-900">Bid submitted</p>
+                      <p className="text-[11px] md:text-xs text-slate-600 mt-0.5 md:mt-1">Konkola equipment tender</p>
+                      <p className="text-[10px] md:text-xs text-slate-500 mt-1 md:mt-2">2 hours ago</p>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                      <p className="text-xs font-semibold text-slate-900">Tender saved</p>
-                      <p className="text-xs text-slate-600 mt-1">Maintenance services package</p>
-                      <p className="text-xs text-slate-500 mt-2">Yesterday</p>
+                    <div className="rounded-lg md:rounded-2xl border border-slate-200 bg-slate-50 p-2 md:p-3">
+                      <p className="text-[11px] md:text-xs font-semibold text-slate-900">Tender saved</p>
+                      <p className="text-[11px] md:text-xs text-slate-600 mt-0.5 md:mt-1">Maintenance services package</p>
+                      <p className="text-[10px] md:text-xs text-slate-500 mt-1 md:mt-2">Yesterday</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-slate-200 bg-slate-900 p-4 md:p-6 text-slate-100 shadow-sm">
+                <div className="rounded-2xl md:rounded-3xl border border-slate-200 bg-slate-900 p-3 md:p-6 text-slate-100 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-[#C78A2C]" />
-                    <p className="text-sm font-semibold">Supplier tips</p>
+                    <p className="text-xs md:text-sm font-semibold">Supplier tips</p>
                   </div>
-                  <ul className="mt-4 space-y-2 text-xs md:text-sm text-slate-300">
-                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Join a consortium to bid on larger tenders.</li>
-                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Update your compliance certificates regularly.</li>
-                    <li className="rounded-2xl border border-slate-800 bg-slate-950/70 p-3">Check your saved tenders for new matches.</li>
+                  <ul className="mt-3 md:mt-4 space-y-1 md:space-y-2 text-[11px] md:text-xs text-slate-300">
+                    <li className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Join a consortium to bid on larger tenders.</li>
+                    <li className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Update your compliance certificates regularly.</li>
+                    <li className="rounded-lg md:rounded-2xl border border-slate-800 bg-slate-950/70 p-2 md:p-3">Check your saved tenders for new matches.</li>
                   </ul>
                 </div>
               </aside>
             </div>
           )}
         </main>
+        </div>
       </div>
     </div>
   )
